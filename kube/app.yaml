@@ -2,15 +2,15 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: adjust
-  name: adjust
+    app: hostname-app
+  name: hostname-app
   namespace: default
 spec:
   progressDeadlineSeconds: 600
   replicas: 3
   selector:
     matchLabels:
-      app: adjust
+      app: hostname-app
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -19,16 +19,16 @@ spec:
   template:
     metadata:
       labels:
-        app: adjust
+        app: hostname-app
     spec:
       containers:
-      - image: adjust:v0.1
+      - image: hostname-app:v0.1
         imagePullPolicy: Never
-        name: adjust
+        name: hostname-app
         resources:
           limits:
             memory: "256Mi"
-            cpu: "200m"
+            cpu: "100m"
           requests:
             memory: "128Mi"
             cpu: "50m"
@@ -45,14 +45,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: adjust-service
+  name: hostname-app-service
 spec:
   ports:
   - port: 8181
     protocol: TCP
     targetPort: 8181
   selector:
-    app: adjust
+    app: hostname-app
   type: LoadBalancer
 status:
   loadBalancer: {}
@@ -60,11 +60,11 @@ status:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: adjust-ingress
+  name: hostname-app-ingress
 spec:
   defaultBackend:
     service:
-      name: adjust-service
+      name: hostname-app-service
       port:
         number: 8181
 ---  
